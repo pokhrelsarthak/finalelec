@@ -6,6 +6,8 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
     "jquery": "^3.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -39,17 +41,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.22.1",
-    "@babel/preset-env": "^7.22.4",
-    "@babel/preset-react": "^7.22.3",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
-    "axios": "^1.4.0",
-    "babel-jest": "^29.5.0",
-    "jest": "^27.0.6",
-    "jest-environment-jsdom": "^27.0.6",
-    "jsdom": "^22.1.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "jest": "^27.5.1"
   }
 }

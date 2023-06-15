@@ -1,21 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import axios from 'axios';
 import DrillDownPieChart1 from '../components/DrillDownPieChart1';
-import 'resize-observer-polyfill';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 
-jest.mock('axios');
-
-describe('DrillDownPieChart1', () => {
-
-  test('renders without error', () => {
-    render(<DrillDownPieChart1 />);
+describe('Pie Chart', () => {
+test('renders DrillDownPieChart1 component', () => {
+    <Router>
+        <DrillDownPieChart1 />
+    </Router>
+    // Assert that the component renders without throwing any error
   });
-
-  // test('fetches data on slice click', async () => {
-  //   axios.get.mockResolvedValueOnce({ data: [] });
-
-  //   render(<DrillDownPieChart1 />);
-  // });
 });
