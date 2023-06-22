@@ -101,7 +101,7 @@ export default function Homechart() {
     const fetchData2 = () => {
         axios.get(`http://localhost:8080/election/woncount`)
             .then((response) => {
-                console.log('Axios response:', response.data);
+                // console.log('Axios response:', response.data);
                 const ranges3 = [];
                 const max = [];
                 const k = response.data;
@@ -153,7 +153,7 @@ export default function Homechart() {
                         shortform: '3 parties'
                     });
 
-                console.log(ranges3);
+                // console.log(ranges3);
                 setDatas(ranges3);
             })
             .catch(error => {

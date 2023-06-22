@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import "./Table5.css";
-import Range1 from "./Range1";
-import Range2 from "./Range2";
-import Range3 from "./Range3";
-import Range4 from "./Range4";
-import Range5 from "./Range5";
-import Range6 from "./Range6";
-import Reports from "./Reports"
+import "../CSS/Table5.css";
+import Range1 from "../Ranges/Range1";
+import Range2 from "../Ranges/Range2";
+import Range3 from "../Ranges/Range3";
+import Range4 from "../Ranges/Range4";
+import Range5 from "../Ranges/Range5";
+import Range6 from "../Ranges/Range6";
+import Reports from "../Reports/Reports";
 
 const Table5 = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

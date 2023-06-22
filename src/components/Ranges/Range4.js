@@ -1,22 +1,17 @@
-
 import axios from 'axios';
 import React,{useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import "./Table5.css";
+import "../CSS/Table5.css";
 export default function Range4() {
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [count,setCount] = useState(0);
   
-
-
   useEffect(() => {
     fetchrange4(10000,50000);
   },[]);
-
-  
 
   const fetchrange4 = (start,end) => {
     axios.get(`http://localhost:8080/election/constrange/${start}/${end}`).then((response) => {

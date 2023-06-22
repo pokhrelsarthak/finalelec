@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import "./Table5.css";
+import "../CSS/Table5.css";
 
 const colors = [
   '#1f77b4', // Steel Blue
