@@ -23,11 +23,11 @@ const Login = (props) => {
     };
     
 
-    axios.post('http://localhost:8080/signup/validation', loginCredentials)
+    axios.post('http://18.119.86.132:8080/electionfinal/signup/validation', loginCredentials)
           .then(response => {
             console.log('Response is:', response.data);
               
-              axios.get(`http://localhost:8080/signup/all`).then((respo) => {
+              axios.get(`http://18.119.86.132:8080/electionfinal/signup/all`).then((respo) => {
                 const responseData = respo.data;
                 const enteredUsername = username; // Replace with the username entered by the user
                 // const enteredPassword = password; // Replace with the password entered by the user

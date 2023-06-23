@@ -30,7 +30,7 @@ const Signup = () => {
     };
   
     axios
-      .post('http://localhost:8080/signup/save', signupData)
+      .post('http://18.119.86.132:8080/electionfinal/signup/save', signupData)
       .then(response => {
         // console.log('Response:', response.data);
         alert('User Added');
@@ -56,7 +56,7 @@ const Signup = () => {
 
       event.preventDefault();
 
-      axios.get(`http://localhost:8080/signup/all`).then((respo) => {
+      axios.get(`http://18.119.86.132:8080/electionfinal/signup/all`).then((respo) => {
           const responseData = respo.data;
           const enteredUsername = username; // Replace with the username entered by the user
           const enteredEmail = email;

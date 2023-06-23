@@ -99,7 +99,7 @@ export default function Homechart() {
       }, []);
 
     const fetchData2 = () => {
-        axios.get(`http://localhost:8080/election/woncount`)
+        axios.get(`http://18.119.86.132:8080/electionfinal/election/woncount`)
             .then((response) => {
                 // console.log('Axios response:', response.data);
                 const ranges3 = [];
