@@ -1,9 +1,8 @@
 import React,{useState,useEffect} from "react";
-import { BrowserRouter as Router, Switch, Route,useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
 import Login from "./components/Authorization/Login";
 import Signup from "./components/Authorization/Signup";
 import Otp from "./components/Authorization/Otp";
-import Otp2 from "./components/Authorization/Otp2";
 import Header from "./components/Home&Header/Header";
 import Home from "./components/Home&Header/home";
 import Charts from "./components/Charts/Charts";
@@ -28,6 +27,7 @@ function App() {
       setRender(false);
       setIsAuthenticated(false);
       window.location.href = '/';
+      // history.push('/');
     };
 
     useEffect(() => {
@@ -41,7 +41,9 @@ function App() {
 
       return (
         <Router>
-          <SessionTimeout timeoutInMinutes={10} onTimeout={handleSessionTimeout} history={history}/>
+          {/* this below snippet works fine, but not spa */}
+           <SessionTimeout timeoutInMinutes={10} onTimeout={handleSessionTimeout} history={history}/>
+          {/* <SessionTimeout timeoutInMinutes={0.07} onTimeout={handleSessionTimeout}/> */}
           {/* {isAuthenticated?(<Header render={render}/>):(<Header render={false}/>)} */}
           {isAuthenticated?(
             <div>
@@ -77,6 +79,9 @@ function App() {
               <Route path="/">
                 <Home/>
               </Route>
+              <Route path="/logout">
+                <Login/>
+              </Route>
             </Switch>
             </div>
           ):(
@@ -88,9 +93,6 @@ function App() {
                 </Route>
                 <Route path="/emailotp">
                   <Otp/>
-                </Route>
-                <Route path="/numberotp">
-                  <Otp2/>
                 </Route>
                 <Route path="/">
                   <Login auth={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setRender={setRender} />

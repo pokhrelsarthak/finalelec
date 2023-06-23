@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Otp() {
@@ -13,7 +13,7 @@ export default function Otp() {
     const [isEmail, setIsEmail] = useState(false);
     const [isNumber, setIsNumber] = useState(false);
     // const [validpass, setValidPass] = useState(false);
-    // const history = useHistory();
+    const history = useHistory();
     
     const handleSubmit1 = (event) => {
         event.preventDefault();
@@ -83,64 +83,116 @@ export default function Otp() {
         return;
     };
 
-    
+    // const emailpost = (passCredentials) => {
+    //   axios.post('http://localhost:8080/signup/changepassword', passCredentials)
+    //   .then(response => {
+    //       console.log('Response is:', response.data);
+    //       alert('Password Successfully Changed');
+    //       // window.location.href='/';
+    //       history.push('/');
+    //       // setValidPass(true);
+    //       setPassword('');
+    //       setConfirmPassword('');
+    //       setErrors({});
+    //   })
+    //   .catch(error => {
+    //       console.error('Error:', error);
+    //   });
+    // }
+
+    // const numberpost = (passCredentials2) => {
+    //   axios.post('http://localhost:8080/signup/changepassword2', passCredentials2)
+    //   .then(response => {
+    //       console.log('Response is:', response.data);
+    //       alert('Password Successfully Changed');
+    //       // window.location.href='/login';
+    //       history.push('/');
+    //       setPassword('');
+    //       setConfirmPassword('');
+    //       setErrors({});
+    //       // setValidPass(true);
+    //   })
+    //   .catch(error => {
+    //       console.error('Error:', error);
+    //   });
+    // }
+
     const handleSubmit2 = (event) => {
       console.log("coming to handlesubmit2");
         if (!password) {
             alert('password is required');
+            console.log('password is required');
             return;
             }
-        
-        if (password.length < 7){
+
+        else if (password.length < 7){
           alert('enter password of length 8 characters minimum');
+          console.log('password length');
           // setErrors({ password: 'Enter 8 characters minimum' });
           return;
         }
 
-        if (password !== confirmPassword) {
-          alert('passwords do not match');
+        else if (!confirmPassword){
+          alert('re-enter the password');
+          console.log('password is not re-entered');
           return;
         }
 
-        if (isEmail){
+        else if (password !== confirmPassword) {
+          alert('passwords do not match');
+          console.log('password matching');
+          // return;
+        }
+
+        else if (isEmail){
+          console.log('inside isemail');
           const passCredentials = {
             email: valuee,
             password: password,
             };
-        
+            
+            // emailpost(passCredentials);
+            // return;
             axios.post('http://localhost:8080/signup/changepassword', passCredentials)
             .then(response => {
                 console.log('Response is:', response.data);
+                console.log('inside email post');
                 alert('Password Successfully Changed');
-                window.location.href='/login'
+                // window.location.href='/';
+                history.push('/');
                 // setValidPass(true);
+                setPassword('');
+                setConfirmPassword('');
+                setErrors({});
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-            setPassword('');
-            setConfirmPassword('');
-            setErrors({});
         }
         else if (isNumber){
+          console.log('inside is number');
           const passCredentials2 = {
             number: valuee,
             password: password,
             };
-        
+            
+            // numberpost(passCredentials2);
+            // return;
             axios.post('http://localhost:8080/signup/changepassword2', passCredentials2)
             .then(response => {
                 console.log('Response is:', response.data);
+                console.log('inside number post');
                 alert('Password Successfully Changed');
-                window.location.href='/login'
+                // window.location.href='/login';
+                history.push('/');
+                setPassword('');
+                setConfirmPassword('');
+                setErrors({});
                 // setValidPass(true);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-            setPassword('');
-            setConfirmPassword('');
-            setErrors({});
         }
     };
 

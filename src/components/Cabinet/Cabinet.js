@@ -1,16 +1,25 @@
 import React, { useState,useEffect } from 'react'
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
+
 export default function Cabinet() {
     const [arr, setArr] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         fetchDatas();
       }, []);
     const fetchDatas = () =>  {
+        setIsLoading(true);
         axios.get(`http://localhost:8080/cabinet/ministers`)
         .then((response) => {
             const k = response.data;
             setArr(k);
-        });
+        })
+        .finally(() => {
+            setIsLoading(false); // Set loading state to false after the request is completed
+          });
 
         }
         const table2Style = {
@@ -35,6 +44,10 @@ export default function Cabinet() {
         <div style={{marginTop:'25px'}}>
             <center>
                 <h1>Cabinet Ministers of Karnataka</h1>
+                {isLoading ? ( // Render loading button if isLoading is true
+                // <button disabled>Loading...</button>
+                <FontAwesomeIcon icon={faSpinner} spin size="3x" /> // Display loader icon while loading
+                ) : (
             <table style={table2Style}>
                 <thead>
                 <tr>
@@ -58,6 +71,7 @@ export default function Cabinet() {
                 ))}
                 </tbody>
             </table>
+             )}
             </center>
         </div>
     )

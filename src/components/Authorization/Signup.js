@@ -1,6 +1,6 @@
 // Signup.js
 import React, { useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link, useHistory} from 'react-router-dom';
 import axios from 'axios';
 
 const Signup = () => {
@@ -9,11 +9,7 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [number, setNumber] = useState('');
-  const [nameUser, setnameUser] = useState(false);
-  const [emailUser, setemailUser] = useState(false);
-  const [numberUser, setnumberUser] = useState(false);
-
-  const [errors, setErrors] = useState('');
+  const history = useHistory();
 
   const validateEmail = (email) => {
     // Regular expression pattern for email validation
@@ -25,135 +21,7 @@ const Signup = () => {
     return (number.length === 10)
   }
 
-  const validate = () => {
-    axios.get(`http://localhost:8080/signup/all`).then((respo) => {
-      const responseData = respo.data;
-      const enteredUsername = username; // Replace with the username entered by the user
-      const enteredEmail = email;
-      const enteredNumber = number;
-
-      const valid_name = responseData.find((user) => user.username === enteredUsername);
-      const valid_email = responseData.find((user) => user.email === enteredEmail);
-      const valid_number = responseData.find((user) => user.number === '+91'+enteredNumber);
-
-      console.log(valid_name);
-      console.log(valid_email);
-      console.log(valid_number);
-
-      if (valid_name){
-        setnameUser(true);
-      }
-      else{
-        setnameUser(false);
-      }
-      if (valid_email){
-        setemailUser(true);
-      }
-      else{
-        setemailUser(false);
-      }
-      if (valid_number){
-        setnumberUser(true);
-      }
-      else{
-        setnumberUser(false);
-      }
-
-    })
-  .catch((error) => {
-    console.error('Axios error:', error);
-  });
-  ////
-  }
-
-  const handleSubmit = (event) => {
-      event.preventDefault();
-      setnameUser(false);
-      setemailUser(false);
-      setnumberUser(false);
-
-      validate();
-      
-      if (!username) {
-        alert('Username is required');
-        return;
-      }
-      if (!password) {
-        alert('Password is required');
-        return;
-      }
-
-      if (password.length < 8){
-        alert('enter password of length 8 characters minimum');
-        // setErrors({ password: 'Enter 8 characters minimum' });
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert('passwords donot match');
-        // setErrors({ confirmPassword: 'Passwords do not match' });
-        return;
-      }
-
-      if (!email) {
-        alert('Email is required');
-        return;
-      }
-
-      if (validateEmail(email)) {
-        // console.log("Email is valid");
-      } else {
-        console.log("Email is not valid");
-        // setErrors({ email: 'enter a valid email' });
-        alert('Enter a valid email i.d');
-        return;
-      }
-
-      if (!number) {
-        alert('Phone Number is required');
-        return;
-      }
-
-      // if (!Number.isInteger(number)){
-      //   alert('Enter a valid Phone Number');
-      // }
-      
-      // if (Number.isInteger(parseInt(number))){
-      //   console.log("Phone Number is Valid");
-      //   }
-      //   else{
-      //     console.log("Phone Number is not Valid");
-      //     alert('not a number');
-      //     return;
-      //   }
-
-      if (validateNumber(number) && Number.isInteger(parseInt(number))){
-      // console.log("Phone Number is Valid");
-      }
-      else{
-        console.log("Phone Number is not Valid");
-        alert('enter a valid 10-digit Phone Number');
-        return;
-      }
-
-      ////
-      console.log(nameUser);
-      console.log(emailUser);
-      console.log(numberUser);
-      if (nameUser){
-        alert("Username already exists, enter a new username");
-        return;
-      }
-
-      else if (emailUser){
-        alert("Email already exists, enter a new email");
-        return;
-      }
-
-      else if (numberUser){
-        alert("Number already exists, enter a new phone number");
-        return;
-      }
+  const post = () => {
     const signupData = {
       username: username,
       password: password,
@@ -167,24 +35,115 @@ const Signup = () => {
         // console.log('Response:', response.data);
         alert('User Added');
         // window.location.href = '/';
+        history.push('/');
         // history.push('/login'); // Navigate to Login page
       })
       .catch(error => {
         console.error('Error:', error);
       });
 
-    // console.log('hello');
-    // Reset form fields and errors
+
+    // Reset form fields 
     setUsername('');
     setPassword('');
     setEmail('');
     setConfirmPassword('');
     setNumber('');
-    
-    setErrors({});
+
+  }
+
+  const handleSubmit = (event) => {
+
+      event.preventDefault();
+
+      axios.get(`http://localhost:8080/signup/all`).then((respo) => {
+          const responseData = respo.data;
+          const enteredUsername = username; // Replace with the username entered by the user
+          const enteredEmail = email;
+          const enteredNumber = number;
+
+          const is_user = responseData.find((user) => user.username === enteredUsername);
+          const is_existing_email = responseData.find((user) => user.email === enteredEmail);
+          const is_existing_number = responseData.find((user) => user.number === '+91'+enteredNumber);
+
+
+          if (is_user){
+            console.log('Username already exists');
+          }
+
+          if (is_existing_email){
+            console.log('Email already exists');
+          }
+
+          if (is_existing_number){
+            console.log('Number already exists');
+          }
+
+      if (!username) {
+        alert('Username is required');
+        return;
+      }
+      if (!password) {
+        alert('Password is required');
+        return;
+      }
+
+      if (password.length < 8){
+        alert('enter password of length 8 characters minimum');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('passwords donot match');
+        return;
+      }
+
+      if (!email) {
+        alert('Email is required');
+        return;
+      }
+
+      if (validateEmail(email)) {
+      } else {
+        alert('Enter a valid email i.d');
+        return;
+      }
+
+      if (!number) {
+        alert('Phone Number is required');
+        return;
+      }
+
+      if (!(validateNumber(number) && Number.isInteger(parseInt(number)))){
+        console.log("Phone Number is not Valid");
+        alert('enter a valid 10-digit Phone Number');
+        return;
+      }
+
+      if (is_user !== undefined){
+        setUsername('');
+        alert("Username already exists, enter a new username");
+        return;
+      }
+      if (is_existing_email !== undefined){
+        setEmail('');
+        alert("Email already exists, enter a new Email");
+        return;
+      }
+      if (is_existing_number !== undefined){
+        setNumber('');
+        alert("Phone number already exists, enter a new phone number");
+        return;
+      }
+
+      // posting details into the database after all the above validations are satisfied.
+      post();
+
+      })
+      .catch((error) => {
+        console.error('Axios error:', error);
+      });
   };
-
-
 
   return (
     <div style={{ marginTop: '30px',display: 'flex',justifyContent:'center' }}>
@@ -199,11 +158,6 @@ const Signup = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        {errors.username && (
-          <span className="error" style={{ paddingLeft: '10px' }}>
-            {errors.username}
-          </span>
-        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <label style={{ width: '120px', paddingRight: '14px' }}>Password:</label>
@@ -213,11 +167,6 @@ const Signup = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {errors.password && (
-          <span className="error" style={{ paddingLeft: '10px' }}>
-            {errors.password}
-          </span>
-        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <label style={{ width: '120px', paddingRight: '20px' }}>Confirm Password:</label>
@@ -227,11 +176,6 @@ const Signup = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        {errors.confirmPassword && (
-          <span className="error" style={{ paddingLeft: '10px' }}>
-            {errors.confirmPassword}
-          </span>
-        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center',justifyContent:'center' }}>
         <label style={{ width: '120px', paddingRight: '20px' }}>Email:</label>
@@ -241,11 +185,6 @@ const Signup = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        {errors.email && (
-          <span className="error" style={{ paddingLeft: '10px' }}>
-            {errors.email}
-          </span>
-        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <label style={{ width: '120px', paddingRight: '20px' }}>Phone Number:</label>
@@ -255,11 +194,6 @@ const Signup = () => {
           value={number}
           onChange={(e) => setNumber(e.target.value)}
         />
-        {errors.number && (
-          <span className="error" style={{ paddingLeft: '10px' }}>
-            {errors.number}
-          </span>
-        )}
       </div>
       <center>
         <button onClick={handleSubmit} type="submit" className="btn btn-success">

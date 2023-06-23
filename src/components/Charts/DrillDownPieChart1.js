@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState ,useEffect} from 'react';
 import axios from 'axios';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import "../CSS/Table5.css";
@@ -34,6 +34,57 @@ const colors = [
 
 const DrillDownPieChart1 = (props) => {
   let cnt = 0;
+  const [mapdata, setMapddata] = useState([]);
+  const MapArr = (start,end) => {
+    const rangesMap = [];
+    axios.get(`http://localhost:8080/election/slice/${start}/${end}`).then((respo) => {
+      // http://localhost:8080/cabinet/ministers
+      const response = respo.data;
+      // const rangesMap = [];
+      for (var i of response){
+        const val = i.constname
+        rangesMap.push(val);
+        // rangesMap.push(', ')
+      }
+      // console.log(rangesMap);
+      // setMapddata(rangesMap);
+      // return rangesMap;
+      // setMapddata(rangesMap);
+      // console.log(rangesMap);
+    }).catch(error => {
+      console.error('Axios error:', error);
+    })
+    return rangesMap;
+  }
+  // MapArr(1,10);
+  // console.log(MapArr(1,10))
+  // let storedValue;
+
+  // MapArr(1, 25)
+  //   .then(result => {
+  //     // Store the result
+  //     storedValue = result;
+  //     console.log(storedValue);
+  //   })
+  //   .catch(error => {
+  //     // Handle errors here
+  //     console.error('Error:', error);
+  //   });
+  const myArray = [];
+
+  for (let i = 1; i <= 201; i += 25) {
+    const rangeStart = i;
+    const rangeEnd = i + 24;
+    const rangeKey = `Range ${rangeStart}-${rangeEnd}`;
+    let rangeValue = [];
+    rangeValue = MapArr(rangeStart,rangeEnd);
+    // rangeValue = 1
+    console.log(rangeValue);
+    // console.log(rangeValue);
+    const rangeObject = { [rangeKey]: [rangeValue] };
+    myArray.push(rangeObject);
+  }
+  console.log(myArray);
   // 2nd level data fetching
   const fetchData = (start,end) => {
     axios.get(`http://localhost:8080/election/slice/${start}/${end}`).then((respo) => {
@@ -115,7 +166,7 @@ const DrillDownPieChart1 = (props) => {
   for (let i = 0; i < rangeCount; i++) {
     const rangeName = 'Range ' + String.fromCharCode(65 + i);
     const endValue = startValue + rangeSize - 1;
-    const rangeLabel = startValue + '-' + endValue;
+    const rangeLabel = 'Range ' + startValue + '-' + endValue;
     ranges.push({   // ranges.push();
       name: rangeName,
       value: 1,
@@ -134,6 +185,7 @@ const DrillDownPieChart1 = (props) => {
   const [cokey,setCokey] = useState("");
   const [secondata,setSecondata] = useState([]);
   const [fourdata,setFourdata] = useState([]);
+  // const [mapdata, setMapddata] = useState([]);
   // const [counnt, setCount] = useState(0);
 
 
@@ -198,6 +250,7 @@ const DrillDownPieChart1 = (props) => {
       cnt = 0;
     }
   };
+  // setMapddata(myArray);
 
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, value,label}) => {
     const RADIAN = Math.PI / 180;
@@ -215,7 +268,6 @@ const DrillDownPieChart1 = (props) => {
     const ex = mx + (cos >= 0 ? 1 : -1) * 22;
     const ey = my;
     const textAnchor = cos >= 0 ? "start" : "end";
-
     return (
         <>
         <path
@@ -290,14 +342,14 @@ const DrillDownPieChart1 = (props) => {
             wrapperStyle={{ backgroundColor: '#DA70D6', padding: '5px' }} // Custom styles for tooltip wrapper
           />
           
-          {(level !== 3 && level !== 4) ? (<Legend
+          {/* {(level !== 3 && level !== 4) ? (<Legend
             align="right" // Adjust alignment as needed
             verticalAlign="middle" // Adjust vertical alignment as needed
             layout="vertical" // Set the layout to "vertical"
             iconType="circle"
             iconSize={10}
             wrapperStyle={level !== 3 ? { marginRight: '100px' } : { marginRight: '40px' }}
-          />):(<div>Click on others to learn more!</div>)}
+          />):(<div>Click on others to learn more!</div>)} */}
         </PieChart>
       </ResponsiveContainer>
     </Fragment>
@@ -332,6 +384,33 @@ const DrillDownPieChart1 = (props) => {
           </tbody>
         </table>
       </center>):(<div></div>)}
+
+      {level === 1 ? (
+        <>
+          <h2>Range to Constituency mapping</h2>
+          <center>
+          <table style={table2Style}>
+            <thead>
+              <tr>
+                <th style={table2HeaderStyle}>Range</th>
+                <th style={table2HeaderStyle}>Constituencies</th>
+              </tr>
+            </thead>
+           { console.log(myArray)}
+            <tbody>
+              {myArray.map((data,index) => (
+                <tr key={data.sno}>
+                  <td style={table2CellStyle}>{Object.keys(data)[0]}</td>
+                  <td style={table2CellStyle}>{Object.values(data)[0]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </center>
+        </>
+      ):(
+        <div></div>
+      )}
     </>
   );
 };

@@ -14,37 +14,46 @@ const Header = (props) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const logout = () => {
+    window.location.href='/'
+  }
+
   useEffect(() => {
     setMenuOpen(props.render);
   }, [props.render]);
   return (
     <>
-      <nav className="header-container">
-        <div className="Container center">
-          <div className="ui fixed">
-            <div className="header-content">
-              <div className="logo-heading-container">
+      <nav className="header-container" style={{}}>
+        <div className="Container center" style={{}}>
+          <div className="ui fixed" style={{}}>
+            <div className="header-content" style={{}}>
+              <div className="logo-heading-container" style={{}}>
                 <img style={{marginTop:'5px'}} src={img1} alt="Logo" className="logo" />
-                <h2 style={{paddingTop: '20px'}}> Karnataka 2023 Election results</h2>
+                <h2 style={{paddingTop: '20px',position:'relative'}}> Karnataka 2023 Election results</h2>
+                {isMenuOpen && 
+                  <button onClick={logout} style={{marginLeft: 'auto',position:'absolute',right:'25px',width:'100px'}}>Logout</button>
+                }
               </div>
-              {/* <div>
-                <div onClick={handleDropdownToggle}>
-                  <img style={{marginTop:'5px'}} src={profile} alt="Profile" className="logo"/>
-                </div>
-                {isDropdownOpen && (
-                  <div className="dropdown">
-                    <ul>
-                      <li>Option 1</li>
-                      <li>Option 2</li>
-                      <li>Option 3</li>
-                    </ul>
-                  </div>
-                  )}
-              </div> */}
             </div>
           </div>
         </div>
       </nav>
+      {/* <nav className="header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
+        <div className="Container center" style={{ maxWidth: '1200px' }}>
+          <div className="ui fixed">
+            <div className="header-content">
+              <div className="logo-heading-container" style={{ display: 'flex', alignItems: 'center' }}>
+                <img style={{ marginTop: '5px', width: '50px' }} src={img1} alt="Logo" className="logo" />
+                <h2 style={{ paddingTop: '20px', textAlign: 'center', flexGrow: 1, margin: 0 }}>Karnataka 2023 Election results</h2>
+                <button style={{ marginLeft: '10px' }}>Logout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav> */}
+
+
+
 
       {isMenuOpen &&(
         <nav>
