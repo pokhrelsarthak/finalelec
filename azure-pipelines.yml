@@ -1,0 +1,130 @@
+trigger:
+  branches:
+    include:
+      - main
+
+schedules:
+  - cron: '*/10 * * * *'
+    displayName: 'Import press releases'
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  name: 'azureagent'
+
+jobs:
+- job: BuildAndNotify
+  displayName: 'Build and Notify on Success or Failure'
+  steps:
+  - checkout: self
+
+  # - task: NodeTool@0
+  #   inputs:
+  #     versionSpec: '10.x'
+  #   displayName: 'Install Node.js'
+
+  # - script: |
+  #     npm install
+  #     npm run build
+  #   displayName: 'npm install and build'
+
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y wget apt-transport-https software-properties-common
+      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      sudo dpkg -i packages-microsoft-prod.deb
+      sudo apt-get update
+      sudo apt-get install -y powershell
+    displayName: 'Install PowerShell Core'
+
+  # - task: PowerShell@2
+  #   condition: always()
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       $url = "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/build/builds/$(Build.BuildId)?api-version=6.0"
+  #       $response = Invoke-RestMethod -Uri $url -Headers @{
+  #         "Authorization" = "Bearer $(System.AccessToken)"
+  #       }
+
+  #       $startTime = [System.DateTime]::Parse($response.startTime)
+  #       $finishTime = [System.DateTime]::Parse($response.finishTime)
+  #       $duration = New-TimeSpan -Start $startTime -End $finishTime
+  #       $durationMinutes = $duration.TotalMinutes
+
+  #       if ($durationMinutes -gt $maxExecutionTime) {
+  #         $emailFrom = "sarthakpokhrel8@gmail.com"
+  #         $emailTo = "sarthakpokhrel3@gmail.com"
+  #         $smtpServer = "smtp.gmail.com"
+  #         $smtpUsername = "sarthakpokhrel8@gmail.com"
+  #         $smtpPassword = "esvpvqnydnstlryw"
+
+  #         $subject = "Azure Pipeline Execution Delayed"
+  #         $body = "The build for branch $(Build.SourceBranch) in pipeline $(System.DefinitionName) is taking longer than expected ($durationMinutes minutes). Check details at $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
+
+  #         $smtpClient = New-Object Net.Mail.SmtpClient($smtpServer, 587)
+  #         $smtpClient.EnableSsl = $true
+  #         $smtpClient.Credentials = New-Object System.Net.NetworkCredential($smtpUsername, $smtpPassword)
+  #         $smtpClient.Send($emailFrom, $emailTo, $subject, $body)
+  #       }
+  #   displayName: 'Send Email Notification on Delayed Execution'
+
+  # - task: PowerShell@2
+  #   condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       $emailFrom = "sarthakpokhrel8@gmail.com"
+  #       $emailTo = "sarthakpokhrel3@gmail.com"
+  #       $smtpServer = "smtp.gmail.com"
+  #       $smtpUsername = "sarthakpokhrel8@gmail.com"
+  #       $smtpPassword = "esvpvqnydnstlryw"
+
+  #       $subject = "Azure Pipeline Build Succeeded - Manual Trigger"
+  #       $body = "The build for branch $(Build.SourceBranch) in pipeline $(System.DefinitionName) succeeded and was manually triggered. Check details at $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
+
+  #       $smtpClient = New-Object Net.Mail.SmtpClient($smtpServer, 587)
+  #       $smtpClient.EnableSsl = $true
+  #       $smtpClient.Credentials = New-Object System.Net.NetworkCredential($smtpUsername, $smtpPassword)
+  #       $smtpClient.Send($emailFrom, $emailTo, $subject, $body)
+  #   displayName: 'Send Email Notification on Manual Trigger'
+
+  - task: PowerShell@2
+    condition: always()
+    inputs:
+     targetType: 'inline'
+     script: |
+      $maxExecutionTime = 0.01
+      $url = "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/build/builds/$(Build.BuildId)?api-version=6.0"
+      $response = Invoke-RestMethod -Uri $url -Headers @{
+        "Authorization" = "Bearer $(System.AccessToken)"
+      }
+
+      $startTime = [System.DateTime]::Parse($response.startTime)
+      
+      if (![string]::IsNullOrEmpty($response.finishTime)) {
+        $finishTime = [System.DateTime]::Parse($response.finishTime)
+      } else {
+        $finishTime = Get-Date
+      }
+
+      $duration = New-TimeSpan -Start $startTime -End $finishTime
+      $durationMinutes = $duration.TotalMinutes
+
+      if ($durationMinutes -gt $maxExecutionTime) {
+        $emailFrom = "sarthakpokhrel8@gmail.com"
+        $emailTo = "sarthakpokhrel3@gmail.com"
+        $smtpServer = "smtp.gmail.com"
+        $smtpUsername = "sarthakpokhrel8@gmail.com"
+        $smtpPassword = "esvpvqnydnstlryw"
+
+        $subject = "Azure Pipeline Execution Delayed"
+        $body = "The build for branch $(Build.SourceBranch) in pipeline $(System.DefinitionName) is taking longer than expected ($durationMinutes minutes). Check details at $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
+
+        $smtpClient = New-Object Net.Mail.SmtpClient($smtpServer, 587)
+        $smtpClient.EnableSsl = $true
+        $smtpClient.Credentials = New-Object System.Net.NetworkCredential($smtpUsername, $smtpPassword)
+        $smtpClient.Send($emailFrom, $emailTo, $subject, $body)
+      }
