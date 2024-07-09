@@ -4,7 +4,7 @@ trigger:
       - main
 
 schedules:
-  - cron: '*/10 * * * *'
+  - cron: '0 0 * * *'
     displayName: 'Import press releases'
     branches:
       include:
